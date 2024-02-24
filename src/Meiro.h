@@ -1,3 +1,8 @@
+/*
+ * Meiro library
+ *
+ * Copyright (C) Yasuhiro ISHII
+ */
 #ifndef __MEIRO_H__
 #define __MRIRO_H__
 
@@ -16,11 +21,11 @@ class Meiro {
 public:
   Meiro();
   void setLedColor(int led_no, int r, int g , int b);
+  void setLedOff(int led_no);
   bool isBallTouch(int floor_no);
 
 private:
   Adafruit_NeoPixel* pixels;
 };
-
 
 #endif /* __MEIRO_H__ */

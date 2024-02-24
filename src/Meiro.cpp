@@ -54,6 +54,19 @@ void Meiro::setLedColor(int led_no, int r, int g, int b) {
   pixels->show();
 }
 
+void Meiro::setLedOff(int led_no)
+{
+  const int led_no_lut[] =
+  {
+    LED_B1,
+    LED_B2,
+    LED_B3,
+    LED_B4
+  };
+  pixels->setPixelColor(led_no_lut[led_no], pixels->Color(0, 0, 0));
+  pixels->show();
+}
+
 bool Meiro::isBallTouch(int floor_no) {
   bool ret = false;
   switch (floor_no) {

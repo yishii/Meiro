@@ -19,18 +19,18 @@ void loop()
   if (meiro.isBallTouch(FLOOR_B1))
   {
     meiro.setLedColor(FLOOR_B1, 0, 0, 255);
-    meiro.setLedColor(FLOOR_B2, 0, 0, 0);
-    meiro.setLedColor(FLOOR_B3, 0, 0, 0);
-    meiro.setLedColor(FLOOR_B4, 0, 0, 0);
+    meiro.setLedOff(FLOOR_B2);
+    meiro.setLedOff(FLOOR_B3);
+    meiro.setLedOff(FLOOR_B4);
   }
  
   // Process when a ball is touched to B2F pin / B2Fのピンにボールが触れたときの処理
   if (meiro.isBallTouch(FLOOR_B2))
   {
-    meiro.setLedColor(FLOOR_B1, 0, 0, 0);
+    meiro.setLedOff(FLOOR_B1);
     meiro.setLedColor(FLOOR_B2, 0, 255, 255);
-    meiro.setLedColor(FLOOR_B3, 0, 0, 0);
-    meiro.setLedColor(FLOOR_B4, 0, 0, 0);
+    meiro.setLedOff(FLOOR_B3);
+    meiro.setLedOff(FLOOR_B4);
   }
 
   // Let's write a code for other floors in the same way! / 同様に他のフロアのひかりかたを作ってみよう!
