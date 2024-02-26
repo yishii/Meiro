@@ -16,6 +16,7 @@
 #define FLOOR_B2 1
 #define FLOOR_B3 2
 #define FLOOR_B4 3
+#define FLOOR_B5 4
 
 class Meiro {
 public:

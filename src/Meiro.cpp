@@ -50,8 +50,10 @@ void Meiro::setLedColor(int led_no, int r, int g, int b) {
     LED_B3,
     LED_B4
   };
-  pixels->setPixelColor(led_no_lut[led_no], pixels->Color(r, g, b));
-  pixels->show();
+  if((led_no >= FLOOR_B1) && (led_no <= FLOOR_B4)) {
+    pixels->setPixelColor(led_no_lut[led_no], pixels->Color(r, g, b));
+    pixels->show();
+  }
 }
 
 void Meiro::setLedOff(int led_no)
@@ -87,6 +89,11 @@ bool Meiro::isBallTouch(int floor_no) {
       break;
     case FLOOR_B4:
       if (digitalRead(PIN_B4) == LOW) {
+        ret = true;
+      }
+      break;
+    case FLOOR_B5:
+      if (digitalRead(PIN_B5) == LOW) {
         ret = true;
       }
       break;

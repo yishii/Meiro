@@ -8,6 +8,6 @@ And this library is designed to use for that Meiro.
 
 ## What is so-called Meiro?
 
-Please refer to the website described below (in Japanese);
+Please refer to the website describes is below (in Japanese);
 
 https://meiro.jimdosite.com/
