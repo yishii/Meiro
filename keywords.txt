@@ -1,0 +1,15 @@
+###########################################
+# Syntax Coloring Map for Meiro
+###########################################
+
+Meiro KEYWORD1
+
+setLedColor KEYWORD2
+setLedOff KEYWORD2
+isBallTouch KEYWORD2
+
+FLOOR_B1 LITERAL1
+FLOOR_B2 LITERAL1
+FLOOR_B3 LITERAL1
+FLOOR_B4 LITERAL1
+FLOOR_B5 LITERAL1
