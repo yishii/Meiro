@@ -1,7 +1,7 @@
 /*
  * Blue Meiro
  */
-#define MEIRO_HW_REV 1    // Use the library for Meiro Rev.1 / 明路ライブラリをRev.1用として使用する
+#define MEIRO_HW_REV 1    // 明路ライブラリをRev.1用として使用する / Use the library for Meiro Rev.1
 #include "Meiro.h"
 
 Meiro meiro;
@@ -16,7 +16,7 @@ const static int led_lut[] = {
 // setup : 電源をONにした直後に一度だけ実行する処理
 void setup()
 {
-  // Do nothing / 特に何もしない
+  meiro.begin(); // 明路ライブラリの初期化 / Initialize Meiro library
 }
 
 void lightFloor(int active_floor)
@@ -81,31 +81,31 @@ void reachedToGoal(void)
 void loop()
 {
   static int active_floor = -1;
-  // Process when a ball is touched to B1F pin / B1Fのピンにボールが触れたときの処理
+  // B1Fのピンにボールが触れたときの処理 / Process when a ball is touched to B1F pin
   if (meiro.isBallTouch(FLOOR_B1))
   {
     active_floor = FLOOR_B1;
   }
  
-  // Process when a ball is touched to B2F pin / B2Fのピンにボールが触れたときの処理
+  // B2Fのピンにボールが触れたときの処理 / Process when a ball is touched to B2F pin
   else if (meiro.isBallTouch(FLOOR_B2))
   {
     active_floor = FLOOR_B2;
   }
 
-  // Process when a ball is touched to B3F pin / B3Fのピンにボールが触れたときの処理
+  // B3Fのピンにボールが触れたときの処理 / Process when a ball is touched to B3F pin
   else if (meiro.isBallTouch(FLOOR_B3))
   {
     active_floor = FLOOR_B3;
   }
 
-  // Process when a ball is touched to B4F pin / B4Fのピンにボールが触れたときの処理
+  // B4Fのピンにボールが触れたときの処理 / Process when a ball is touched to B4F pin
   else if (meiro.isBallTouch(FLOOR_B4))
   {
     active_floor = FLOOR_B4;
   }
 
-  // Process when a ball is touched to B5F pin / B5Fのピンにボールが触れたときの処理
+  // B5Fのピンにボールが触れたときの処理 / Process when a ball is touched to B5F pin
   else if (meiro.isBallTouch(FLOOR_B5))
   {
     reachedToGoal();
