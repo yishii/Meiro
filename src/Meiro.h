@@ -70,7 +70,7 @@ public:
 
     // Set the all LEDs RGB(0, 0, 0)
     pixels->setPixelColor(_LED_B1, pixels->Color(0, 0, 0));
-    pixels->setPixelColor(_LED_B2, pixels->Color(0, 255, 0));
+    pixels->setPixelColor(_LED_B2, pixels->Color(0, 0, 0));
     pixels->setPixelColor(_LED_B3, pixels->Color(0, 0, 0));
     pixels->setPixelColor(_LED_B4, pixels->Color(0, 0, 0));
     pixels->show();
