@@ -1,7 +1,7 @@
 /*
  * 基本の明路メインプログラムサンプル / Basic Meiro example
  */
-#define MEIRO_HW_REV 1    // 明路ライブラリをRev.1用として使用する / Use the library for Meiro Rev.1
+#define MEIRO_HW_REV 5    // 明路ライブラリをRev.5用として使用する / Use the library for Meiro Rev.5
 #include "Meiro.h"
 
 Meiro meiro;

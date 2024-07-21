@@ -12,7 +12,7 @@
 #error スケッチ内に「MEIRO_HW_REV」を適切に定義してください。Please define MEIRO_HW_REV in your sketch!
 #endif
 
-#if MEIRO_HW_REV == 1
+#if MEIRO_HW_REV == 5
 // Definition for pin number
 #define _PIN_B1 7
 #define _PIN_B2 9
@@ -26,7 +26,7 @@
 #define _LED_B2 2
 #define _LED_B3 1
 #define _LED_B4 0
-#elif MEIRO_HW_REV == 2
+#elif MEIRO_HW_REV == 6
 // Definition for pin number
 #define _PIN_B1 1
 #define _PIN_B2 2
@@ -34,6 +34,9 @@
 #define _PIN_B4 4
 #define _PIN_B5 5
 #define _PIN_LED 8
+#define _PIN_SW1 0
+#define _PIN_SW2 6
+#define _PIN_BUZZER 7
 
 // Definition for serial LED connecting order
 #define _LED_B1 3
@@ -41,7 +44,7 @@
 #define _LED_B3 1
 #define _LED_B4 0
 #else
-#error Meiro Hardware Revision other than 1 and 2 is not supported so far.
+#error Meiro Hardware Revision other than 5 and 6 is not supported so far.
 #endif
 
 #define FLOOR_B1 0
@@ -64,6 +67,13 @@ public:
     pinMode(_PIN_B4, INPUT_PULLUP);
     pinMode(_PIN_B5, INPUT_PULLUP);
 
+#if MEIRO_HW_REV == 6
+    pinMode(_PIN_SW1, INPUT_PULLUP);
+    pinMode(_PIN_SW2, INPUT_PULLUP);
+    digitalWrite(_PIN_BUZZER, LOW);
+    pinMode(_PIN_BUZZER, OUTPUT);
+#endif
+
     pixels = new Adafruit_NeoPixel(4, _PIN_LED, NEO_GRB + NEO_KHZ800);
     pixels->begin();
     pixels->clear();
@@ -74,7 +84,7 @@ public:
     pixels->setPixelColor(_LED_B3, pixels->Color(0, 0, 0));
     pixels->setPixelColor(_LED_B4, pixels->Color(0, 0, 0));
     pixels->show();
-  }
+  };
 
   void setLedColor(int led_no, int r, int g , int b)
   {
@@ -94,6 +104,48 @@ public:
   void setLedOff(int led_no)
   {
     this->setLedColor(led_no, 0, 0, 0);
+  };
+
+  bool isSw1Push(void)
+  {
+#if MEIRO_HW_REV == 6
+    if(digitalRead(_PIN_SW1) == LOW)
+    {
+      return true;
+    } else {
+      return false;
+    }
+#else
+    return false;
+#endif
+  };
+
+  bool isSw2Push(void)
+  {
+#if MEIRO_HW_REV == 6
+    if(digitalRead(_PIN_SW2) == LOW)
+    {
+      return true;
+    } else {
+      return false;
+    }
+#else
+    return false;
+#endif
+  };
+
+  void tone(uint32_t frequency, uint32_t duration = 0)
+  {
+#if MEIRO_HW_REV == 6
+    ::tone(_PIN_BUZZER, frequency, duration);
+#endif
+  };
+
+  void noTone()
+  {
+#if MEIRO_HW_REV == 6
+    ::noTone(_PIN_BUZZER);
+#endif
   };
 
   bool isBallTouch(int floor_no)
@@ -129,7 +181,7 @@ public:
         break;
     }
     return ret;
-  }
+  };
 
 private:
   Adafruit_NeoPixel* pixels;
