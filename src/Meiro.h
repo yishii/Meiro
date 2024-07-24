@@ -9,7 +9,7 @@
 #include <Adafruit_NeoPixel.h>
 
 #if !defined(MEIRO_HW_REV)
-#error スケッチ内に「MEIRO_HW_REV」を適切に定義してください。Please define MEIRO_HW_REV in your sketch!
+#error Please define MEIRO_HW_REV in your sketch!
 #endif
 
 #if MEIRO_HW_REV == 5
