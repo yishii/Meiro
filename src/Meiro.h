@@ -43,6 +43,8 @@
 #define _LED_B2 2
 #define _LED_B3 1
 #define _LED_B4 0
+
+#define BUTTON_LONG_PRESS_THRESH 500
 #else
 #error Meiro Hardware Revision other than 5 and 6 is not supported so far.
 #endif
@@ -53,10 +55,13 @@
 #define FLOOR_B4 3
 #define FLOOR_B5 4
 
+#define MAX_FLOORS 4
+
 class Meiro {
 public:
   Meiro()
   {
+    memset(colors_specified, 0, sizeof(colors_specified));
   };
 
   void begin(void)
@@ -74,19 +79,114 @@ public:
     pinMode(_PIN_BUZZER, OUTPUT);
 #endif
 
+    privilegedMode = false;
+
     pixels = new Adafruit_NeoPixel(4, _PIN_LED, NEO_GRB + NEO_KHZ800);
     pixels->begin();
     pixels->clear();
 
     // Set the all LEDs RGB(0, 0, 0)
-    pixels->setPixelColor(_LED_B1, pixels->Color(0, 0, 0));
-    pixels->setPixelColor(_LED_B2, pixels->Color(0, 0, 0));
-    pixels->setPixelColor(_LED_B3, pixels->Color(0, 0, 0));
-    pixels->setPixelColor(_LED_B4, pixels->Color(0, 0, 0));
-    pixels->show();
+    setLedOff(FLOOR_B1);
+    setLedOff(FLOOR_B2);
+    setLedOff(FLOOR_B3);
+    setLedOff(FLOOR_B4);
+
+#if MEIRO_HW_REV == 6
+    xTaskCreate(Meiro::TaskBackgroundMainFunction, "Meiro Background Main Task", 2048, this, 1, NULL);
+#endif
+
   };
 
-  void setLedColor(int led_no, int r, int g , int b)
+  void backgroundMain(void)
+  {
+    static bool sw1_1d = false;
+    static bool sw2_1d = false;
+    static uint32_t sw1_pressed_time = 0;
+    static uint32_t sw2_pressed_time = 0;
+    bool communicationMode = false;
+    uint32_t timeModeEntered = 0;
+
+    while(1)
+    {
+      bool sw1 = isSw1Push();
+      bool sw2 = isSw2Push();
+      bool sw1_short_pressed = false;
+      bool sw2_short_pressed = false;
+      bool sw1_long_pressed = false;
+      bool sw2_long_pressed = false;
+
+      if (sw1 && !sw1_1d)
+      {
+        sw1_pressed_time = millis();
+      }
+
+      if (sw2 && !sw2_1d)
+      {
+        sw2_pressed_time = millis();
+      }
+
+      if (!sw1 && sw1_1d)
+      {
+        if ((millis() - sw1_pressed_time) > BUTTON_LONG_PRESS_THRESH)
+        {
+          sw1_long_pressed = true;
+        } else {
+          sw1_short_pressed = true;
+        }
+      }
+
+      if (!sw2 && sw2_1d)
+      {
+        if ((millis() - sw2_pressed_time) > BUTTON_LONG_PRESS_THRESH)
+        {
+          sw2_long_pressed = true;
+        } else {
+          sw2_short_pressed = true;
+        }
+      }
+
+      if(sw1_long_pressed){
+        Serial.println("SW1 LONG");
+      }
+      if(sw2_long_pressed){
+        Serial.println("SW2 LONG");
+      }
+      if(sw1_short_pressed){
+        Serial.println("SW1 SHORT");
+      }
+      if(sw2_short_pressed){
+        Serial.println("SW2 SHORT");
+      }
+
+      {
+        if (!communicationMode){
+          if(sw1_long_pressed){
+            Serial.println("Enter");
+            communicationMode = true;
+            timeModeEntered = millis();
+            privilegedMode = true;
+            for (int i=0; i<MAX_FLOORS; i++){
+              setLedColorInternal(i, 0, 0, 255);
+            }
+          }
+        } else {
+          if((sw1_long_pressed) || ((millis() - timeModeEntered) > (60 * 1000))){
+            Serial.println("Leave");
+            communicationMode = false;
+            privilegedMode = false;
+            restoreLedColors();
+          }
+        }
+      }
+
+      sw1_1d = sw1;
+      sw2_1d = sw2;
+
+      vTaskDelay(10 / portTICK_RATE_MS);
+    }
+  }
+
+  void setLedColor(int floor_no, int r, int g , int b)
   {
     const int led_no_lut[] =
     {
@@ -95,10 +195,34 @@ public:
       _LED_B3,
       _LED_B4
     };
-    if((led_no >= FLOOR_B1) && (led_no <= FLOOR_B4)) {
-      pixels->setPixelColor(led_no_lut[led_no], pixels->Color(r, g, b));
-      pixels->show();
+    if((floor_no >= FLOOR_B1) && (floor_no <= FLOOR_B4)) {
+      colors_specified[floor_no].r = r;
+      colors_specified[floor_no].g = g;
+      colors_specified[floor_no].b = b;
+      if(!privilegedMode){
+        pixels->setPixelColor(led_no_lut[floor_no], pixels->Color(r, g, b));
+        pixels->show();
+      }
     }
+  };
+
+  void restoreLedColors(void)
+  {
+    const int led_no_lut[] =
+    {
+      _LED_B1,
+      _LED_B2,
+      _LED_B3,
+      _LED_B4
+    };
+    int floor;
+
+    for(floor=0; floor<MAX_FLOORS; floor++)
+    {
+      pixels->setPixelColor(led_no_lut[floor],
+        pixels->Color(colors_specified[floor].r, colors_specified[floor].g, colors_specified[floor].b));
+    }
+    pixels->show();
   };
 
   void setLedOff(int led_no)
@@ -185,6 +309,35 @@ public:
 
 private:
   Adafruit_NeoPixel* pixels;
+#if MEIRO_HW_REV == 6
+  struct {
+    uint8_t r;
+    uint8_t g;
+    uint8_t b;
+  } colors_specified[MAX_FLOORS]; // スケッチで指定されたLED色情報
+  portMUX_TYPE mutex = portMUX_INITIALIZER_UNLOCKED;
+
+  static void TaskBackgroundMainFunction(void* pvParameters) {
+    Meiro* instance = static_cast<Meiro*>(pvParameters);
+    instance->backgroundMain();
+  }
+  bool privilegedMode = false;
+
+  void setLedColorInternal(int floor_no, int r, int g , int b)
+  {
+    const int led_no_lut[] =
+    {
+      _LED_B1,
+      _LED_B2,
+      _LED_B3,
+      _LED_B4
+    };
+    if((floor_no >= FLOOR_B1) && (floor_no <= FLOOR_B4)) {
+      pixels->setPixelColor(led_no_lut[floor_no], pixels->Color(r, g, b));
+      pixels->show();
+    }
+  };
+#endif
 };
 
 #endif /* __MEIRO_H__ */
