@@ -22,8 +22,8 @@ void loop()
   if (meiro.isBallTouch(FLOOR_B1))
   {
     meiro.setLedColor(FLOOR_B1, 255, 255, 255); // B1は、R=255、G=255、B=255の白を設定
-    meiro.setLedColor(FLOOR_B3, 0, 0, 0); // B2は、R=0、G=0、B=0の黒を設定
-    meiro.setLedColor(FLOOR_B2, 0, 0, 0); // B3は、R=0、G=0、B=0の黒を設定
+    meiro.setLedColor(FLOOR_B2, 0, 0, 0); // B2は、R=0、G=0、B=0の黒を設定
+    meiro.setLedColor(FLOOR_B3, 0, 0, 0); // B3は、R=0、G=0、B=0の黒を設定
     meiro.setLedColor(FLOOR_B4, 0, 0, 0); // B4は、R=0、G=0、B=0の黒を設定
 
     meiro.tone(FREQ_C);     // ドの音を出力
@@ -35,8 +35,8 @@ void loop()
   if (meiro.isBallTouch(FLOOR_B2))
   {
     meiro.setLedColor(FLOOR_B1, 0, 0, 0); // B1は、R=0、G=0、B=0の黒を設定
-    meiro.setLedColor(FLOOR_B3, 255, 255, 255); // B2は、R=255、G=255、B=255の白を設定
-    meiro.setLedColor(FLOOR_B2, 0, 0, 0); // B3は、R=0、G=0、B=0の黒を設定
+    meiro.setLedColor(FLOOR_B2, 255, 255, 255); // B2は、R=255、G=255、B=255の白を設定
+    meiro.setLedColor(FLOOR_B3, 0, 0, 0); // B3は、R=0、G=0、B=0の黒を設定
     meiro.setLedColor(FLOOR_B4, 0, 0, 0); // B4は、R=0、G=0、B=0の黒を設定
 
     meiro.tone(FREQ_C);     // ドの音を出力
