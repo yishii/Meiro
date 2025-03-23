@@ -1,7 +1,6 @@
 /*
  * 明路ワークショップ向けプログラム
  */
-#define MEIRO_HW_REV 6    // 明路ライブラリをRev.6用として使用する
 #include "Meiro.h"
 
 #define FREQ_C 1046      // ドの音の周波数[Hz]

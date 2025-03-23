@@ -1,7 +1,6 @@
 /*
  * Blue Meiro
  */
-#define MEIRO_HW_REV 6    // 明路ライブラリをRev.6用として使用する / Use the library for Meiro Rev.6
 #include "Meiro.h"
 
 Meiro meiro;
